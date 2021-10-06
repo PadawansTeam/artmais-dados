@@ -29,7 +29,7 @@ Session = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 session = Session()
 
-app = Flask(__name__, template_folder='html')
+app = Flask(__name__)
 
 
 @app.route('/dashboard', methods=['GET'])
