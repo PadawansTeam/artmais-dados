@@ -2,9 +2,9 @@ import datetime
 import pandas as pd
 from sqlalchemy import func
 from src.infra.factories.database_connection_factory import create
-from src.domain.entities.comment import ComentariosModel
-from src.domain.entities.publication import PublicacaoModel
-from src.domain.entities.user import UsuariosModel
+from src.domain.comment import ComentariosModel
+from src.domain.publication import PublicacaoModel
+from src.domain.user import UsuariosModel
 from src.util.data_util import evolucao_mes, media_idades
 
 class CommentRepository():
