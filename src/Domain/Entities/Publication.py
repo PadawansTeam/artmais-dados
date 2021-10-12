@@ -1,4 +1,7 @@
-class PublicacaoModel(Base):
+from sqlalchemy import Column, Integer
+from sqlalchemy.orm import declarative_base
+
+class PublicacaoModel(declarative_base()):
     __tablename__ = 'publicacao'
 
     idpublicacao = Column(Integer, primary_key=True)
