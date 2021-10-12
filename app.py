@@ -1,5 +1,5 @@
 from flask import Flask
-from src.application.dashboard import Dashboard
+from src.app.dashboard import Dashboard
 
 app = Flask(__name__)
 
