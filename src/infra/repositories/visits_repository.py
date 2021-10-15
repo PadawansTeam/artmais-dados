@@ -30,7 +30,7 @@ class VisitRepository():
     def total_number_of_visits(self):
         session = create()
 
-        visits = self.session.query(func.count(VisitasModel.idacessoperfil)). \
+        visits = session.query(func.count(VisitasModel.idacessoperfil)). \
             filter(VisitasModel.idusuariovisitado == self.user_id).all()
 
         visits_amount = [x[0] for x in visits]
