@@ -7,11 +7,12 @@ from src.util.data_util import month_growth
 
 class VisitRepository():
     def __init__(self, user_id):
-        self.session = create()
         self.user_id = user_id
 
     def get_visits_by_user_id(self):
-        visits = self.session.query(VisitasModel.datavisita, func.count(VisitasModel.idacessoperfil)) \
+        session = create()
+
+        visits = session.query(VisitasModel.datavisita, func.count(VisitasModel.idacessoperfil)) \
             .group_by(VisitasModel.datavisita). \
             filter(VisitasModel.idusuariovisitado == self.user_id).all()
 
@@ -22,12 +23,18 @@ class VisitRepository():
             {'date': visits_dates,
              'idpublicacao': idacessoperfil_visits})
 
+        session.close()
+
         return month_growth(df_visits)
 
     def total_number_of_visits(self):
+        session = create()
+
         visits = self.session.query(func.count(VisitasModel.idacessoperfil)). \
             filter(VisitasModel.idusuariovisitado == self.user_id).all()
 
         visits_amount = [x[0] for x in visits]
+
+        session.close()
 
         return visits_amount

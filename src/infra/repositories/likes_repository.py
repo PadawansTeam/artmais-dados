@@ -9,11 +9,12 @@ from src.util.data_util import month_growth, users_age_average
 
 class LikeRepository():
     def __init__(self, user_id):
-        self.session = create()
         self.user_id = user_id
 
     def get_likes_by_user_id(self):
-        likes = self.session.query(CurtidasModel.datacurtida, func.count(CurtidasModel.idpublicacao)) \
+        session = create()
+
+        likes = session.query(CurtidasModel.datacurtida, func.count(CurtidasModel.idpublicacao)) \
         .group_by(CurtidasModel.datacurtida). \
         filter(CurtidasModel.idpublicacao == PublicacaoModel.idpublicacao). \
         filter(PublicacaoModel.idusuario == self.user_id).all()
@@ -25,10 +26,14 @@ class LikeRepository():
             {'date': likes_dates,
             'idpublicacao': idpublicacao_likes})
 
+        session.close()
+
         return month_growth(df_likes)
 
     def get_likes_age_average_by_user_id(self):
-        average_users_age_likes = self.session.query(CurtidasModel.idusuario, UsuariosModel.datanasc). \
+        session = create()
+
+        average_users_age_likes = session.query(CurtidasModel.idusuario, UsuariosModel.datanasc). \
         filter(CurtidasModel.idpublicacao == PublicacaoModel.idpublicacao). \
         filter(CurtidasModel.idusuario == UsuariosModel.idusuario). \
         filter(PublicacaoModel.idusuario == self.user_id).all()
@@ -42,13 +47,19 @@ class LikeRepository():
          'idusuario': idpublicacao,
          'now': datetime.datetime.today().strftime("%Y-%m-%d")})
 
+        session.close()
+
         return users_age_average(df_age_likes)
 
     def total_number_of_likes(self):
-        likes = self.session.query(func.count(CurtidasModel.idpublicacao)). \
+        session = create()
+
+        likes = session.query(func.count(CurtidasModel.idpublicacao)). \
             filter(CurtidasModel.idusuario == UsuariosModel.idusuario). \
             filter(PublicacaoModel.idusuario == self.user_id)
 
         likes_amount = [x[0] for x in likes]
+
+        session.close()
 
         return likes_amount

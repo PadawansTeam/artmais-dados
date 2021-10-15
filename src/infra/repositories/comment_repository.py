@@ -10,11 +10,12 @@ from src.util.data_util import month_growth, users_age_average
 
 class CommentRepository():
     def __init__(self, user_id):
-        self.session = create()
         self.user_id = user_id
 
     def get_comments_by_user_id(self):
-        comments = self.session.query(ComentariosModel.datahora, func.count(ComentariosModel.idpublicacao)).group_by(
+        session = create()
+
+        comments = session.query(ComentariosModel.datahora, func.count(ComentariosModel.idpublicacao)).group_by(
             ComentariosModel.datahora). \
             filter(ComentariosModel.idpublicacao == PublicacaoModel.idpublicacao). \
             filter(PublicacaoModel.idusuario == self.user_id).all()
@@ -26,10 +27,14 @@ class CommentRepository():
             {'date': comments_dates,
              'idpublicacao': idpublicacao_comments})
 
+        session.close()
+
         return month_growth(df_comments)
 
     def get_comments_age_average_by_user_id(self):
-        average_users_age_comments = self.session.query(ComentariosModel.idusuario, UsuariosModel.datanasc). \
+        session = create()
+
+        average_users_age_comments = session.query(ComentariosModel.idusuario, UsuariosModel.datanasc). \
             filter(ComentariosModel.idpublicacao == PublicacaoModel.idpublicacao). \
             filter(ComentariosModel.idusuario == UsuariosModel.idusuario). \
             filter(PublicacaoModel.idusuario == self.user_id).all()
@@ -42,13 +47,19 @@ class CommentRepository():
              'idusuario': idpublicacoes_comentarios,
              'now': datetime.datetime.today().strftime("%Y-%m-%d")})
 
+        session.close()
+
         return users_age_average(df_idade_comentarios)
 
     def total_number_of_comments(self):
-        comments = self.session.query(func.count(ComentariosModel.idpublicacao)). \
+        session = create()
+
+        comments = session.query(func.count(ComentariosModel.idpublicacao)). \
             filter(ComentariosModel.idpublicacao == PublicacaoModel.idpublicacao). \
             filter(PublicacaoModel.idusuario == self.user_id).all()
 
         comments_amount = [x[0] for x in comments]
+
+        session.close()
 
         return comments_amount
