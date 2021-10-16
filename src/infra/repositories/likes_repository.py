@@ -58,7 +58,7 @@ class LikeRepository():
             filter(CurtidasModel.idusuario == UsuariosModel.idusuario). \
             filter(PublicacaoModel.idusuario == self.user_id)
 
-        likes_amount = [x[0] for x in likes]
+        likes_amount = likes[0][0]
 
         session.close()
 
