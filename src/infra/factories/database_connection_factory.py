@@ -1,11 +1,12 @@
 import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import NullPool
 
 def create():
     database_url = os.getenv('DATABASE')
-    print(database_url)
-    engine = create_engine(database_url, echo=True)
+    
+    engine = create_engine(database_url, echo=True, poolclass=NullPool)
 
     session = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
