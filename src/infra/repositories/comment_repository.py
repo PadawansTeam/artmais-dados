@@ -1,5 +1,4 @@
 import datetime
-import logging
 
 import pandas as pd
 from sqlalchemy import func
