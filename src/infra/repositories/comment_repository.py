@@ -1,4 +1,5 @@
 import datetime
+
 import pandas as pd
 from sqlalchemy import func
 from src.infra.factories.database_connection_factory import create
@@ -58,7 +59,7 @@ class CommentRepository():
             filter(ComentariosModel.idpublicacao == PublicacaoModel.idpublicacao). \
             filter(PublicacaoModel.idusuario == self.user_id).all()
 
-        comments_amount = [x[0] for x in comments]
+        comments_amount = comments[0][0]
 
         session.close()
 

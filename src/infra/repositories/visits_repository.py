@@ -33,7 +33,7 @@ class VisitRepository():
         visits = session.query(func.count(VisitasModel.idacessoperfil)). \
             filter(VisitasModel.idusuariovisitado == self.user_id).all()
 
-        visits_amount = [x[0] for x in visits]
+        visits_amount = visits[0][0]
 
         session.close()
 
