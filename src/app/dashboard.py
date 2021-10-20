@@ -30,9 +30,10 @@ class Dashboard():
 
         linear_regression_likes = linear_regression(likes_dict)
         linear_regression_comments = linear_regression(comments_dict)
+        linear_regression_visits = linear_regression(visits_dict)
 
         dict_merge = {'likesGrowth': likes_dict, 'commentsGrowth': comments_dict, 'averageUsersAge': average, 'likesPrediction': linear_regression_likes,
                       'commentsPrediction': linear_regression_comments, 'sumLikes': likes_total, 'sumComments': comments_total,
-                      'visitsGrowth': visits_dict, 'sumVisits': visits_total}
+                      'visitsGrowth': visits_dict, 'sumVisits': visits_total, 'visitsPrediction': linear_regression_visits}
 
         return dict_merge
