@@ -70,7 +70,7 @@ def linear_regression(dict, dates_array):
 
         df['prediction'] = np.where(df.prediction < 0, 0, df.prediction)
 
-        df.loc[df.date.isin(dates_array), 'prediction'] = ''
+        df.loc[df.date.isin(dates_array), 'prediction'] = -1
 
         linear_regression_dict = df.to_dict('records')
 
