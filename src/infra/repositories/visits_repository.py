@@ -2,7 +2,7 @@ import pandas as pd
 from sqlalchemy import func
 from src.infra.factories.database_connection_factory import create
 from src.domain.visit import VisitasModel
-from src.util.data_util import month_growth
+from src.util.data_util import month_growth, get_sorted_array
 
 
 class VisitRepository():
@@ -46,9 +46,6 @@ class VisitRepository():
             .group_by(VisitasModel.datavisita). \
             filter(VisitasModel.idusuariovisitado == self.user_id).all()
 
-        dates_array = [x[0].strftime('%m/%Y') for x in visits]
-        dates_array = list(set(dates_array))
-
         session.close()
 
-        return dates_array
+        return get_sorted_array(visits)

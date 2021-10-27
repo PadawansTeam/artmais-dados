@@ -78,3 +78,16 @@ def linear_regression(dict, dates_array):
 
     except(Exception):
         return None
+
+def get_sorted_array(query_array):
+
+    dates_array = [x[0].strftime('%m/%Y') for x in query_array]
+    dates_array = list(set(dates_array))
+
+    dates_new = [datetime.datetime.strptime(x, '%m/%Y') for x in dates_array]
+
+    dates_new.sort()
+
+    dates_new_strf = [x.strftime('%m/%Y') for x in dates_new]
+
+    return dates_new_strf
