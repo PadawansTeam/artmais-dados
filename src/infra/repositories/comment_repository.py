@@ -1,7 +1,7 @@
 import datetime
 
 import pandas as pd
-from sqlalchemy import func, distinct
+from sqlalchemy import func
 from src.infra.factories.database_connection_factory import create
 from src.domain.comment import ComentariosModel
 from src.domain.publication import PublicacaoModel
