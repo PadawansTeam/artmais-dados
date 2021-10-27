@@ -33,7 +33,7 @@ def users_age_average(df):
     except(Exception):
         return 0
 
-def linear_regression(dict):
+def linear_regression(dict, dates_array):
 
     try:
         lm = linear_model.LinearRegression()
@@ -49,7 +49,7 @@ def linear_regression(dict):
 
         model = lm.fit(df_date, df_sum)
 
-        month_list = []
+        month_list = dates_array.copy()
 
         for i in range(1, 6):
             month_list.append((datetime.date.today() + relativedelta(months=+i)).strftime('%m/%Y'))
@@ -60,14 +60,17 @@ def linear_regression(dict):
 
         Y = model.predict(X)
         Y = pd.DataFrame(Y, columns=['prediction'])
+
         df = pd.concat([X, Y], axis=1)
 
         df['date'] = df['date'].map(datetime.datetime.fromordinal)
-        df['date'] = df['date'].dt.strftime("%m/%Y")
+        df['date'] = df['date'].dt.strftime('%m/%Y')
 
         df = df.astype({'prediction': int})
 
         df['prediction'] = np.where(df.prediction < 0, 0, df.prediction)
+
+        df.loc[df.date.isin(dates_array), 'prediction'] = ''
 
         linear_regression_dict = df.to_dict('records')
 
@@ -75,11 +78,3 @@ def linear_regression(dict):
 
     except(Exception):
         return None
-
-def total_interacoes(dict):
-    df_dict = pd.DataFrame.from_dict(dict)
-
-    df_dict = df_dict.drop('date', 1)
-    sum = df_dict.values.sum()
-
-    return int(sum)

@@ -38,3 +38,17 @@ class VisitRepository():
         session.close()
 
         return visits_amount
+
+    def get_visits_dates_array(self):
+        session = create()
+
+        visits = session.query(VisitasModel.datavisita) \
+            .group_by(VisitasModel.datavisita). \
+            filter(VisitasModel.idusuariovisitado == self.user_id).all()
+
+        dates_array = [x[0].strftime('%m/%Y') for x in visits]
+        dates_array = list(set(dates_array))
+
+        session.close()
+
+        return dates_array
