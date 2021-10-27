@@ -97,13 +97,13 @@ def get_sorted_array(query_array):
 
     dates_new.sort(reverse=True)
 
-    dates_three_last_months = dates_new[:3]
+    dates_last_three_months = dates_new[:3]
 
-    dates_three_last_months.sort()
+    dates_last_three_months.sort()
 
-    dates_three_last_months_strf = [x.strftime('%m/%Y') for x in dates_three_last_months]
+    dates_last_three_months_strf = [x.strftime('%m/%Y') for x in dates_last_three_months]
 
-    return dates_three_last_months_strf
+    return dates_last_three_months_strf
 
 
 def total_average(comments_age_average_df, likes_age_average_df):
