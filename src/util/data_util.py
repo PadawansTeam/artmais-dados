@@ -76,6 +76,5 @@ def linear_regression(dict, dates_array):
 
         return linear_regression_dict
 
-
     except(Exception):
         return None

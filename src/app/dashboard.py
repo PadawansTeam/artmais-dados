@@ -14,9 +14,7 @@ class Dashboard():
     def get_dashboard_data(self):
 
         comments_date_array = self.comment_repository.get_comments_dates_array()
-
         comments_dict = self.comment_repository.get_comments_by_user_id()
-
 
         likes_dict = self.like_repository.get_likes_by_user_id()
         likes_date_array = self.like_repository.get_likes_dates_array()
@@ -27,8 +25,6 @@ class Dashboard():
         comments_age_average_df = self.comment_repository.get_comments_age_average_by_user_id()
         likes_age_average_df = self.like_repository.get_likes_age_average_by_user_id()
 
-
-
         comments_total = self.comment_repository.total_number_of_comments()
         likes_total = self.like_repository.total_number_of_likes()
         visits_total = self.visit_repository.total_number_of_visits()
@@ -37,7 +33,6 @@ class Dashboard():
         df_sum = df_concat['timedelta'].sum()
         count = df_concat.shape[0]
         average = int(df_sum / count)
-
 
         linear_regression_likes = linear_regression(likes_dict, likes_date_array)
         linear_regression_comments = linear_regression(comments_dict, comments_date_array)
