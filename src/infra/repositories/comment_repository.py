@@ -1,7 +1,7 @@
 import datetime
 
 import pandas as pd
-from sqlalchemy import func
+from sqlalchemy import func, distinct
 from src.infra.factories.database_connection_factory import create
 from src.domain.comment import ComentariosModel
 from src.domain.publication import PublicacaoModel
@@ -64,3 +64,18 @@ class CommentRepository():
         session.close()
 
         return comments_amount
+
+    def get_comments_dates_array(self):
+        session = create()
+
+        comments = session.query(ComentariosModel.datahora).group_by(
+            ComentariosModel.datahora). \
+            filter(ComentariosModel.idpublicacao == PublicacaoModel.idpublicacao). \
+            filter(PublicacaoModel.idusuario == self.user_id).all()
+
+        dates_array = [x[0].strftime('%m/%Y') for x in comments]
+        dates_array = list(set(dates_array))
+
+        session.close()
+
+        return dates_array
