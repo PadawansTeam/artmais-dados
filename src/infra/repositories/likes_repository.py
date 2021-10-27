@@ -56,8 +56,8 @@ class LikeRepository():
         session = create()
 
         likes = session.query(func.count(CurtidasModel.idpublicacao)). \
-            filter(CurtidasModel.idusuario == UsuariosModel.idusuario). \
-            filter(PublicacaoModel.idusuario == self.user_id)
+            filter(CurtidasModel.idpublicacao == PublicacaoModel.idpublicacao). \
+            filter(PublicacaoModel.idusuario == self.user_id).all()
 
         likes_amount = likes[0][0]
 

@@ -6,12 +6,17 @@ from sklearn import linear_model
 
 
 def month_growth(df):
-
     try:
         df['sum'] = df['idpublicacao'].groupby(
             df['date']).transform('sum')
 
         df = df.drop_duplicates('date')
+
+        df['date'] = pd.to_datetime(df['date'])
+
+        df = df.sort_values(by=['date'])
+
+        df['date'] = df['date'].dt.strftime('%m/%Y')
 
         df = df.drop('idpublicacao', 1)
 
@@ -20,8 +25,8 @@ def month_growth(df):
     except(Exception):
         return None
 
-def users_age_average(df):
 
+def users_age_average(df):
     try:
         df['date'] = pd.to_datetime(df['date'])
         df['now'] = pd.to_datetime(df['now'])
@@ -33,8 +38,8 @@ def users_age_average(df):
     except(Exception):
         return 0
 
-def linear_regression(dict, dates_array):
 
+def linear_regression(dict, dates_array):
     try:
         lm = linear_model.LinearRegression()
 
@@ -51,7 +56,7 @@ def linear_regression(dict, dates_array):
 
         month_list = dates_array.copy()
 
-        for i in range(1, 6):
+        for i in range(1, 3):
             month_list.append((datetime.date.today() + relativedelta(months=+i)).strftime('%m/%Y'))
 
         X = pd.DataFrame(month_list, columns=['date'])
@@ -79,8 +84,8 @@ def linear_regression(dict, dates_array):
     except(Exception):
         return None
 
-def get_sorted_array(query_array):
 
+def get_sorted_array(query_array):
     dates_array = [x[0].strftime('%m/%Y') for x in query_array]
     dates_array = list(set(dates_array))
 
@@ -91,3 +96,20 @@ def get_sorted_array(query_array):
     dates_new_strf = [x.strftime('%m/%Y') for x in dates_new]
 
     return dates_new_strf
+
+
+def total_average(comments_age_average_df, likes_age_average_df):
+
+    df_concat = pd.concat([comments_age_average_df, likes_age_average_df])
+
+    df_sum = df_concat['timedelta'].sum()
+
+    count = df_concat.shape[0]
+
+    try:
+        average = int(df_sum / count)
+
+    except(Exception):
+        average = 0
+
+    return average
