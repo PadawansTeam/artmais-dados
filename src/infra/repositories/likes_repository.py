@@ -5,7 +5,8 @@ from src.infra.factories.database_connection_factory import create
 from src.domain.like import CurtidasModel
 from src.domain.publication import PublicacaoModel
 from src.domain.user import UsuariosModel
-from src.util.data_util import month_growth, users_age_average
+from src.util.data_util import month_growth, users_age_average, get_sorted_array
+
 
 class LikeRepository():
     def __init__(self, user_id):
@@ -72,9 +73,6 @@ class LikeRepository():
             filter(CurtidasModel.idpublicacao == PublicacaoModel.idpublicacao). \
             filter(PublicacaoModel.idusuario == self.user_id).all()
 
-        dates_array = [x[0].strftime('%m/%Y') for x in likes]
-        dates_array = list(set(dates_array))
-
         session.close()
 
-        return dates_array
+        return get_sorted_array(likes)

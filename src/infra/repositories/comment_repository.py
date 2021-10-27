@@ -6,7 +6,7 @@ from src.infra.factories.database_connection_factory import create
 from src.domain.comment import ComentariosModel
 from src.domain.publication import PublicacaoModel
 from src.domain.user import UsuariosModel
-from src.util.data_util import month_growth, users_age_average
+from src.util.data_util import month_growth, users_age_average, get_sorted_array
 
 
 class CommentRepository():
@@ -73,9 +73,6 @@ class CommentRepository():
             filter(ComentariosModel.idpublicacao == PublicacaoModel.idpublicacao). \
             filter(PublicacaoModel.idusuario == self.user_id).all()
 
-        dates_array = [x[0].strftime('%m/%Y') for x in comments]
-        dates_array = list(set(dates_array))
-
         session.close()
 
-        return dates_array
+        return get_sorted_array(comments)
