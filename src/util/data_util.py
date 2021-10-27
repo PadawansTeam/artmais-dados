@@ -14,6 +14,10 @@ def month_growth(df):
 
         df['date'] = pd.to_datetime(df['date'])
 
+        df = df.sort_values(by=['date'], ascending=False)
+
+        df = df.head(3)
+
         df = df.sort_values(by=['date'])
 
         df['date'] = df['date'].dt.strftime('%m/%Y')
@@ -56,7 +60,7 @@ def linear_regression(dict, dates_array):
 
         month_list = dates_array.copy()
 
-        for i in range(1, 3):
+        for i in range(1, 4):
             month_list.append((datetime.date.today() + relativedelta(months=+i)).strftime('%m/%Y'))
 
         X = pd.DataFrame(month_list, columns=['date'])
@@ -91,15 +95,18 @@ def get_sorted_array(query_array):
 
     dates_new = [datetime.datetime.strptime(x, '%m/%Y') for x in dates_array]
 
-    dates_new.sort()
+    dates_new.sort(reverse=True)
 
-    dates_new_strf = [x.strftime('%m/%Y') for x in dates_new]
+    dates_three_last_months = dates_new[:3]
 
-    return dates_new_strf
+    dates_three_last_months.sort()
+
+    dates_three_last_months_strf = [x.strftime('%m/%Y') for x in dates_three_last_months]
+
+    return dates_three_last_months_strf
 
 
 def total_average(comments_age_average_df, likes_age_average_df):
-
     df_concat = pd.concat([comments_age_average_df, likes_age_average_df])
 
     df_sum = df_concat['timedelta'].sum()
