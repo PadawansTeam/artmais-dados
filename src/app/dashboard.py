@@ -2,7 +2,8 @@ import pandas as pd
 from src.infra.repositories.comment_repository import CommentRepository
 from src.infra.repositories.likes_repository import LikeRepository
 from src.infra.repositories.visits_repository import VisitRepository
-from src.util.data_util import linear_regression
+from src.util.data_util import linear_regression, total_average
+
 
 class Dashboard():
     def __init__(self, user_id):
@@ -29,10 +30,8 @@ class Dashboard():
         likes_total = self.like_repository.total_number_of_likes()
         visits_total = self.visit_repository.total_number_of_visits()
 
-        df_concat = pd.concat([comments_age_average_df, likes_age_average_df])
-        df_sum = df_concat['timedelta'].sum()
-        count = df_concat.shape[0]
-        average = int(df_sum / count)
+        average = total_average(comments_age_average_df, likes_age_average_df)
+
 
         linear_regression_likes = linear_regression(likes_dict, likes_date_array)
         linear_regression_comments = linear_regression(comments_dict, comments_date_array)
