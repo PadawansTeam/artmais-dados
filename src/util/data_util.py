@@ -10,6 +10,8 @@ def month_growth(df):
 
         df['date'] = pd.to_datetime(df['date'])
 
+        df['idpublicacao'] = df['idpublicacao'].astype(int)
+
         df = df.sort_values(by=['date'], ascending=False)
 
         last_three_months = []
