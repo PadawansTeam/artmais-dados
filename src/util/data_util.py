@@ -16,9 +16,26 @@ def month_growth(df):
 
         df = df.sort_values(by=['date'], ascending=False)
 
-        df = df.head(3)
+        last_three_months = []
+
+        for i in range(-3, 1):
+            last_three_months.append((datetime.date.today() + relativedelta(months=i)).strftime('%m/%Y'))
+
+        df_last_three_months = pd.DataFrame(
+            {'date': last_three_months,
+             'sum': 0})
+
+        df_last_three_months['date'] = pd.to_datetime(df_last_three_months['date'])
+
+        df = df.head(4)
+
+        df = df.combine_first(df_last_three_months)
 
         df = df.sort_values(by=['date'])
+
+        df = df.drop_duplicates('date')
+
+        df = df.head(4)
 
         df['date'] = df['date'].dt.strftime('%m/%Y')
 
@@ -43,7 +60,7 @@ def users_age_average(df):
         return 0
 
 
-def linear_regression(dict, dates_array):
+def linear_regression(dict):
     try:
         lm = linear_model.LinearRegression()
 
@@ -58,12 +75,17 @@ def linear_regression(dict, dates_array):
 
         model = lm.fit(df_date, df_sum)
 
-        month_list = dates_array.copy()
+        month_list = []
 
-        for i in range(1, 4):
+        for i in range(-3, 1):
             month_list.append((datetime.date.today() + relativedelta(months=+i)).strftime('%m/%Y'))
 
-        X = pd.DataFrame(month_list, columns=['date'])
+        dates_array = month_list.copy()
+
+        for i in range(1, 4):
+            dates_array.append((datetime.date.today() + relativedelta(months=+i)).strftime('%m/%Y'))
+
+        X = pd.DataFrame(dates_array, columns=['date'])
         X['date'] = pd.to_datetime(X['date'])
         X['date'] = X['date'].map(datetime.datetime.toordinal)
 
@@ -79,7 +101,7 @@ def linear_regression(dict, dates_array):
 
         df['prediction'] = np.where(df.prediction < 0, 0, df.prediction)
 
-        df.loc[df.date.isin(dates_array), 'prediction'] = -1
+        df.loc[df.date.isin(month_list), 'prediction'] = -1
 
         linear_regression_dict = df.to_dict('records')
 

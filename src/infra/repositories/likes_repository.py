@@ -64,15 +64,3 @@ class LikeRepository():
         session.close()
 
         return likes_amount
-
-    def get_likes_dates_array(self):
-        session = create()
-
-        likes = session.query(CurtidasModel.datacurtida) \
-            .group_by(CurtidasModel.datacurtida). \
-            filter(CurtidasModel.idpublicacao == PublicacaoModel.idpublicacao). \
-            filter(PublicacaoModel.idusuario == self.user_id).all()
-
-        session.close()
-
-        return get_sorted_array(likes)

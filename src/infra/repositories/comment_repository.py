@@ -64,15 +64,3 @@ class CommentRepository():
         session.close()
 
         return comments_amount
-
-    def get_comments_dates_array(self):
-        session = create()
-
-        comments = session.query(ComentariosModel.datahora).group_by(
-            ComentariosModel.datahora). \
-            filter(ComentariosModel.idpublicacao == PublicacaoModel.idpublicacao). \
-            filter(PublicacaoModel.idusuario == self.user_id).all()
-
-        session.close()
-
-        return get_sorted_array(comments)

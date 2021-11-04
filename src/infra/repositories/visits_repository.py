@@ -1,8 +1,10 @@
+import datetime
+
 import pandas as pd
 from sqlalchemy import func
 from src.infra.factories.database_connection_factory import create
 from src.domain.visit import VisitasModel
-from src.util.data_util import month_growth, get_sorted_array
+from src.util.data_util import month_growth
 
 
 class VisitRepository():
@@ -38,14 +40,3 @@ class VisitRepository():
         session.close()
 
         return visits_amount
-
-    def get_visits_dates_array(self):
-        session = create()
-
-        visits = session.query(VisitasModel.datavisita) \
-            .group_by(VisitasModel.datavisita). \
-            filter(VisitasModel.idusuariovisitado == self.user_id).all()
-
-        session.close()
-
-        return get_sorted_array(visits)
