@@ -84,7 +84,7 @@ def linear_regression(dict):
 
         month_list = []
 
-        for i in range(-3, 1):
+        for i in range(-4, 1):
             month_list.append((datetime.date.today() + relativedelta(months=+i)).strftime('%m/%Y'))
 
         dates_array = month_list.copy()
