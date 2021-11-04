@@ -1,5 +1,3 @@
-import datetime
-
 import pandas as pd
 from sqlalchemy import func
 from src.infra.factories.database_connection_factory import create

@@ -7,10 +7,6 @@ from sklearn import linear_model
 
 def month_growth(df):
     try:
-        df['sum'] = df['idpublicacao'].groupby(
-            df['date']).transform('sum')
-
-        df = df.drop_duplicates('date')
 
         df['date'] = pd.to_datetime(df['date'])
 
@@ -23,19 +19,28 @@ def month_growth(df):
 
         df_last_three_months = pd.DataFrame(
             {'date': last_three_months,
-             'sum': 0})
+             'idpublicacao': 0})
 
         df_last_three_months['date'] = pd.to_datetime(df_last_three_months['date'])
 
-        df = df.head(4)
+        df_last_three_months = df_last_three_months.sort_values(by=['date'], ascending=False)
 
-        df = df.combine_first(df_last_three_months)
+        df = pd.concat([df, df_last_three_months]).groupby(["date"], as_index=False)["idpublicacao"].sum()
 
-        df = df.sort_values(by=['date'])
+        df = df.sort_values(by=['date'], ascending=False)
+
+        df['sum'] = df['idpublicacao'].groupby(
+            df['date']).transform('sum')
 
         df = df.drop_duplicates('date')
 
-        df = df.head(4)
+        df['date'] = pd.to_datetime(df['date'])
+
+        df = df.sort_values(by=['date'], ascending=False)
+
+        df = df.head(3)
+
+        df = df.sort_values(by=['date'])
 
         df['date'] = df['date'].dt.strftime('%m/%Y')
 
@@ -85,7 +90,7 @@ def linear_regression(dict):
         for i in range(1, 4):
             dates_array.append((datetime.date.today() + relativedelta(months=+i)).strftime('%m/%Y'))
 
-        X = pd.DataFrame(dates_array, columns=['date'])
+        X = pd.DataFrame(dates_array[2:], columns=['date'])
         X['date'] = pd.to_datetime(X['date'])
         X['date'] = X['date'].map(datetime.datetime.toordinal)
 
@@ -109,23 +114,6 @@ def linear_regression(dict):
 
     except(Exception):
         return None
-
-
-def get_sorted_array(query_array):
-    dates_array = [x[0].strftime('%m/%Y') for x in query_array]
-    dates_array = list(set(dates_array))
-
-    dates_new = [datetime.datetime.strptime(x, '%m/%Y') for x in dates_array]
-
-    dates_new.sort(reverse=True)
-
-    dates_last_three_months = dates_new[:3]
-
-    dates_last_three_months.sort()
-
-    dates_last_three_months_strf = [x.strftime('%m/%Y') for x in dates_last_three_months]
-
-    return dates_last_three_months_strf
 
 
 def total_average(comments_age_average_df, likes_age_average_df):

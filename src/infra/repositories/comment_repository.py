@@ -6,7 +6,7 @@ from src.infra.factories.database_connection_factory import create
 from src.domain.comment import ComentariosModel
 from src.domain.publication import PublicacaoModel
 from src.domain.user import UsuariosModel
-from src.util.data_util import month_growth, users_age_average, get_sorted_array
+from src.util.data_util import month_growth, users_age_average
 
 
 class CommentRepository():

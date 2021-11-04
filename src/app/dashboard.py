@@ -29,7 +29,6 @@ class Dashboard():
 
         average = total_average(comments_age_average_df, likes_age_average_df)
 
-
         linear_regression_likes = linear_regression(likes_dict)
         linear_regression_comments = linear_regression(comments_dict)
         linear_regression_visits = linear_regression(visits_dict)
