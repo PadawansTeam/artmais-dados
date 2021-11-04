@@ -14,14 +14,11 @@ class Dashboard():
     
     def get_dashboard_data(self):
 
-        comments_date_array = self.comment_repository.get_comments_dates_array()
         comments_dict = self.comment_repository.get_comments_by_user_id()
 
         likes_dict = self.like_repository.get_likes_by_user_id()
-        likes_date_array = self.like_repository.get_likes_dates_array()
 
         visits_dict = self.visit_repository.get_visits_by_user_id()
-        visits_date_array = self.visit_repository.get_visits_dates_array()
 
         comments_age_average_df = self.comment_repository.get_comments_age_average_by_user_id()
         likes_age_average_df = self.like_repository.get_likes_age_average_by_user_id()
@@ -32,10 +29,9 @@ class Dashboard():
 
         average = total_average(comments_age_average_df, likes_age_average_df)
 
-
-        linear_regression_likes = linear_regression(likes_dict, likes_date_array)
-        linear_regression_comments = linear_regression(comments_dict, comments_date_array)
-        linear_regression_visits = linear_regression(visits_dict, visits_date_array)
+        linear_regression_likes = linear_regression(likes_dict)
+        linear_regression_comments = linear_regression(comments_dict)
+        linear_regression_visits = linear_regression(visits_dict)
 
         dict_merge = {'likesGrowth': likes_dict, 'commentsGrowth': comments_dict, 'averageUsersAge': average, 'likesPrediction': linear_regression_likes,
                       'commentsPrediction': linear_regression_comments, 'sumLikes': likes_total, 'sumComments': comments_total,

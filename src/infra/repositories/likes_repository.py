@@ -5,7 +5,7 @@ from src.infra.factories.database_connection_factory import create
 from src.domain.like import CurtidasModel
 from src.domain.publication import PublicacaoModel
 from src.domain.user import UsuariosModel
-from src.util.data_util import month_growth, users_age_average, get_sorted_array
+from src.util.data_util import month_growth, users_age_average
 
 
 class LikeRepository():
@@ -20,14 +20,14 @@ class LikeRepository():
         filter(CurtidasModel.idpublicacao == PublicacaoModel.idpublicacao). \
         filter(PublicacaoModel.idusuario == self.user_id).all()
 
+        session.close()
+
         likes_dates = [x[0].strftime('%m/%Y') for x in likes]
         idpublicacao_likes = [x[1] for x in likes]
 
         df_likes = pd.DataFrame(
             {'date': likes_dates,
             'idpublicacao': idpublicacao_likes})
-
-        session.close()
 
         return month_growth(df_likes)
 
@@ -64,15 +64,3 @@ class LikeRepository():
         session.close()
 
         return likes_amount
-
-    def get_likes_dates_array(self):
-        session = create()
-
-        likes = session.query(CurtidasModel.datacurtida) \
-            .group_by(CurtidasModel.datacurtida). \
-            filter(CurtidasModel.idpublicacao == PublicacaoModel.idpublicacao). \
-            filter(PublicacaoModel.idusuario == self.user_id).all()
-
-        session.close()
-
-        return get_sorted_array(likes)
