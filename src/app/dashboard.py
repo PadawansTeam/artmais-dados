@@ -1,4 +1,3 @@
-import pandas as pd
 from src.infra.repositories.comment_repository import CommentRepository
 from src.infra.repositories.likes_repository import LikeRepository
 from src.infra.repositories.visits_repository import VisitRepository
