@@ -17,7 +17,8 @@ def month_growth(df):
         last_three_months = []
 
         for i in range(-3, 1):
-            last_three_months.append((datetime.date.today() + relativedelta(months=i)).strftime('%m/%Y'))
+            last_three_months.append((datetime.date.today() +
+                                      relativedelta(months=i)).strftime('%m/%Y'))
 
         df_last_three_months = pd.DataFrame(
             {'date': last_three_months,
@@ -27,7 +28,8 @@ def month_growth(df):
 
         df_last_three_months = df_last_three_months.sort_values(by=['date'], ascending=False)
 
-        df = pd.concat([df, df_last_three_months]).groupby(["date"], as_index=False)["idpublicacao"].sum()
+        df = pd.concat([df, df_last_three_months]).groupby(["date"], as_index=False)["idpublicacao"]\
+            .sum()
 
         df = df.sort_values(by=['date'], ascending=False)
 

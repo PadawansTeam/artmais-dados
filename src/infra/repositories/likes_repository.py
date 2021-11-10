@@ -27,7 +27,7 @@ class LikeRepository():
 
         df_likes = pd.DataFrame(
             {'date': likes_dates,
-            'idpublicacao': idpublicacao_likes})
+             'idpublicacao': idpublicacao_likes})
 
         return month_growth(df_likes)
 
@@ -39,14 +39,13 @@ class LikeRepository():
         filter(CurtidasModel.idusuario == UsuariosModel.idusuario). \
         filter(PublicacaoModel.idusuario == self.user_id).all()
 
-        date_likes = [x[1].strftime(
-        '%Y-%m-%d') for x in average_users_age_likes]
+        date_likes = [x[1].strftime('%Y-%m-%d') for x in average_users_age_likes]
         idpublicacao = [x[0] for x in average_users_age_likes]
 
         df_age_likes = pd.DataFrame(
-        {'date': date_likes,
-         'idusuario': idpublicacao,
-         'now': datetime.datetime.today().strftime("%Y-%m-%d")})
+            {'date': date_likes,
+             'idusuario': idpublicacao,
+             'now': datetime.datetime.today().strftime("%Y-%m-%d")})
 
         session.close()
 
