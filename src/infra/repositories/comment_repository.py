@@ -16,7 +16,8 @@ class CommentRepository():
     def get_comments_by_user_id(self):
         session = create()
 
-        comments = session.query(ComentariosModel.datahora, func.count(ComentariosModel.idpublicacao)).group_by(
+        comments = session.query(ComentariosModel.datahora,
+                                 func.count(ComentariosModel.idpublicacao)).group_by(
             ComentariosModel.datahora). \
             filter(ComentariosModel.idpublicacao == PublicacaoModel.idpublicacao). \
             filter(PublicacaoModel.idusuario == self.user_id).all()
@@ -35,7 +36,8 @@ class CommentRepository():
     def get_comments_age_average_by_user_id(self):
         session = create()
 
-        average_users_age_comments = session.query(ComentariosModel.idusuario, UsuariosModel.datanasc). \
+        average_users_age_comments = session.query(ComentariosModel.idusuario,
+                                                   UsuariosModel.datanasc). \
             filter(ComentariosModel.idpublicacao == PublicacaoModel.idpublicacao). \
             filter(ComentariosModel.idusuario == UsuariosModel.idusuario). \
             filter(PublicacaoModel.idusuario == self.user_id).all()
