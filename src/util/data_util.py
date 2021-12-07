@@ -95,6 +95,7 @@ def linear_regression(dict):
             dates_array.append((datetime.date.today() + relativedelta(months=+i)).strftime('%m/%Y'))
 
         X = pd.DataFrame(dates_array[2:], columns=['date'])
+
         X['date'] = pd.to_datetime(X['date'])
         X['date'] = X['date'].map(datetime.datetime.toordinal)
 
@@ -121,6 +122,7 @@ def linear_regression(dict):
 
 
 def total_average(comments_age_average_df, likes_age_average_df):
+
     df_concat = pd.concat([comments_age_average_df, likes_age_average_df])
 
     df_sum = df_concat['timedelta'].sum()
@@ -134,3 +136,90 @@ def total_average(comments_age_average_df, likes_age_average_df):
         average = 0
 
     return average
+
+def month_grow_by_type(df, type):
+
+    df = df[df['types'] == type]
+
+    df['idpublicacao'] = df['idpublicacao'].astype(int)
+
+    df = df.sort_values(by=['date'], ascending=False)
+
+    last_three_months = []
+
+    for i in range(-3, 1):
+        last_three_months.append((datetime.date.today() +
+                                    relativedelta(months=i)).strftime('%m/%Y'))
+
+    df_last_three_months = pd.DataFrame(
+        {'date': last_three_months,
+            'idpublicacao': 0})
+
+    df_last_three_months['date'] = pd.to_datetime(df_last_three_months['date'])
+    df_last_three_months = df_last_three_months.sort_values(by=['date'], ascending=False)
+
+    df = pd.concat([df, df_last_three_months]).groupby(["date", "types"], as_index=False)["idpublicacao"]\
+        .sum()
+    
+    df = df.sort_values(by=['date'], ascending=False)
+
+    df['sum'] = df['idpublicacao'].groupby(
+        df['date']).transform('sum')
+
+    df = df.drop_duplicates('date')
+
+    
+    for month in last_three_months:
+
+        if(df.isin([month]).any().any() == False):
+            df = df.append({'types': type, 'idpublicacao': 0, 'sum': 0, 'date': month}, ignore_index=True)
+
+    df['date'] = pd.to_datetime(df['date'])
+    
+    df = df.sort_values(by=['date'], ascending=False)
+    df = df.head(3)
+    df = df.sort_values(by=['date'])
+
+    df['date'] = df['date'].dt.strftime('%m/%Y')
+
+    df = df.drop('idpublicacao', 1)
+    
+    return df
+
+
+def concat_video(df_like_video, df_comment_video):
+
+    df_like_video = month_grow_by_type(df_like_video, 'Video')
+    df_comment_video = month_grow_by_type(df_comment_video, 'Video')
+    
+    df = pd.concat([df_like_video, df_comment_video]).groupby(["date", "types"], as_index=False)["sum"]\
+        .sum()
+    
+    df = df.drop('types', 1)
+
+    return df.to_dict('records')
+
+def concat_audio(df_like_audio, df_comment_audio):
+
+    df_like_audio = month_grow_by_type(df_like_audio, 'Audio')
+    df_comment_audio = month_grow_by_type(df_comment_audio, 'Audio')
+
+    df = pd.concat([df_like_audio, df_comment_audio]).groupby(["date", "types"], as_index=False)["sum"]\
+        .sum()
+
+    df = df.drop('types', 1)
+
+    return df.to_dict('records')
+
+def concat_imagem(df_like_imagem, df_comment_imagem):
+
+    df_like_imagem = month_grow_by_type(df_like_imagem, 'Imagem')
+    df_comment_imagem = month_grow_by_type(df_comment_imagem, 'Imagem')
+
+    df = pd.concat([df_like_imagem, df_comment_imagem]).groupby(["date", "types"], as_index=False)["sum"]\
+        .sum()
+
+    df = df.drop('types', 1)
+
+    return df.to_dict('records')
+    

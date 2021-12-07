@@ -5,7 +5,9 @@ from src.infra.factories.database_connection_factory import create
 from src.domain.like import CurtidasModel
 from src.domain.publication import PublicacaoModel
 from src.domain.user import UsuariosModel
-from src.util.data_util import month_growth, users_age_average
+from src.domain.media import MidiaModel
+from src.util.data_util import month_growth, users_age_average, month_grow_by_type
+from dateutil.relativedelta import relativedelta
 
 
 class LikeRepository():
@@ -63,3 +65,36 @@ class LikeRepository():
         session.close()
 
         return likes_amount
+
+    def total_number_of_likes_by_media_type(self):
+        session = create()
+
+        likes_by_media_type = session.query(MidiaModel.idtipomidia, CurtidasModel.datacurtida, 
+            func.count(CurtidasModel.idpublicacao)).group_by(MidiaModel.idtipomidia, CurtidasModel.datacurtida). \
+            filter(CurtidasModel.idpublicacao == PublicacaoModel.idpublicacao). \
+            filter(PublicacaoModel.idmidia == MidiaModel.idmidia). \
+            filter(PublicacaoModel.idusuario == self.user_id).all()
+
+        types = [x[0] for x in likes_by_media_type]
+        likes_dates = [x[1].strftime('%m/%Y') for x in likes_by_media_type]
+        idpublicacao = [x[2] for x in likes_by_media_type]
+
+
+        transdict = {1: 'Imagem',
+             2: 'Video',
+             3: 'Audio',
+             4: 'Midia Externa',
+        }
+
+        types = [transdict[number] for number in types]
+
+        df_likes_by_media_type = pd.DataFrame(
+            {'types': types,
+             'idpublicacao': idpublicacao,
+             'date': likes_dates})
+
+
+        session.close()
+
+
+        return df_likes_by_media_type

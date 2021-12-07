@@ -1,7 +1,7 @@
 from src.infra.repositories.comment_repository import CommentRepository
 from src.infra.repositories.likes_repository import LikeRepository
 from src.infra.repositories.visits_repository import VisitRepository
-from src.util.data_util import linear_regression, total_average
+from src.util.data_util import linear_regression, total_average, concat_video, concat_audio, concat_imagem
 
 
 class Dashboard():
@@ -14,11 +14,17 @@ class Dashboard():
     def get_dashboard_data(self):
 
         comments_dict = self.comment_repository.get_comments_by_user_id()
+        comments_media_type = self.comment_repository.total_number_of_comments_by_media_type()
 
         likes_dict = self.like_repository.get_likes_by_user_id()
-
+        likes_media_type = self.like_repository.total_number_of_likes_by_media_type()
+        
         visits_dict = self.visit_repository.get_visits_by_user_id()
 
+        video_dict = concat_video(likes_media_type, comments_media_type)
+        audio_dict = concat_audio(likes_media_type, comments_media_type)
+        imagem_dict = concat_imagem(likes_media_type, comments_media_type)
+        
         comments_age_average_df = self.comment_repository.get_comments_age_average_by_user_id()
         likes_age_average_df = self.like_repository.get_likes_age_average_by_user_id()
 
@@ -31,11 +37,12 @@ class Dashboard():
         linear_regression_likes = linear_regression(likes_dict)
         linear_regression_comments = linear_regression(comments_dict)
         linear_regression_visits = linear_regression(visits_dict)
-
+           
         dict_merge = {'likesGrowth': likes_dict, 'commentsGrowth': comments_dict,
                       'averageUsersAge': average, 'likesPrediction': linear_regression_likes,
                       'commentsPrediction': linear_regression_comments, 'sumLikes': likes_total,
                       'sumComments': comments_total, 'visitsGrowth': visits_dict,
-                      'sumVisits': visits_total, 'visitsPrediction': linear_regression_visits}
-
+                      'sumVisits': visits_total, 'visitsPrediction': linear_regression_visits,
+                      'video': video_dict, 'audio': audio_dict, 'imagem': imagem_dict}
+        
         return dict_merge
