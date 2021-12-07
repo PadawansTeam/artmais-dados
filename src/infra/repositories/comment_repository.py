@@ -1,12 +1,12 @@
 import datetime
-
 import pandas as pd
 from sqlalchemy import func
 from src.infra.factories.database_connection_factory import create
 from src.domain.comment import ComentariosModel
 from src.domain.publication import PublicacaoModel
 from src.domain.user import UsuariosModel
-from src.util.data_util import month_growth, users_age_average
+from src.domain.media import MidiaModel
+from src.util.data_util import month_growth, users_age_average, month_grow_by_type
 
 
 class CommentRepository():
@@ -66,3 +66,34 @@ class CommentRepository():
         session.close()
 
         return comments_amount
+
+    def total_number_of_comments_by_media_type(self):
+        session = create()
+
+        comments_by_media_type = session.query(MidiaModel.idtipomidia, ComentariosModel.datahora, 
+        func.count(ComentariosModel.idpublicacao)).group_by(MidiaModel.idtipomidia, ComentariosModel.datahora). \
+            filter(ComentariosModel.idpublicacao == PublicacaoModel.idpublicacao). \
+            filter(PublicacaoModel.idmidia == MidiaModel.idmidia). \
+            filter(PublicacaoModel.idusuario == self.user_id).all()
+
+        types = [x[0] for x in comments_by_media_type]
+        comments_dates = [x[1].strftime('%m/%Y') for x in comments_by_media_type]
+        idpublicacao = [x[2] for x in comments_by_media_type]
+
+
+        transdict = {1: 'Imagem',
+             2: 'Video',
+             3: 'Audio',
+             4: 'Midia Externa',
+        }
+
+        types = [transdict[number] for number in types]
+
+        df_comments_by_media_type = pd.DataFrame(
+            {'types': types,
+             'idpublicacao': idpublicacao,
+             'date': comments_dates})
+
+        session.close()
+
+        return df_comments_by_media_type
