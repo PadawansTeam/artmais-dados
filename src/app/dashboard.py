@@ -1,7 +1,7 @@
 from src.infra.repositories.comment_repository import CommentRepository
 from src.infra.repositories.likes_repository import LikeRepository
 from src.infra.repositories.visits_repository import VisitRepository
-from src.util.data_util import linear_regression, total_average, concat_video, concat_audio, concat_imagem
+from src.util.data_util import linear_regression, total_average, month_grow_by_type
 
 
 class Dashboard():
@@ -20,10 +20,15 @@ class Dashboard():
         likes_media_type = self.like_repository.total_number_of_likes_by_media_type()
         
         visits_dict = self.visit_repository.get_visits_by_user_id()
+                
+        likes_video = month_grow_by_type(likes_media_type, 'Video')
+        comments_video = month_grow_by_type(comments_media_type, 'Video')
 
-        video_dict = concat_video(likes_media_type, comments_media_type)
-        audio_dict = concat_audio(likes_media_type, comments_media_type)
-        imagem_dict = concat_imagem(likes_media_type, comments_media_type)
+        likes_audio = month_grow_by_type(likes_media_type, 'Audio')
+        comments_audio = month_grow_by_type(comments_media_type, 'Audio')
+
+        likes_pictures = month_grow_by_type(likes_media_type, 'Imagem')
+        comments_pictures = month_grow_by_type(comments_media_type, 'Imagem')
         
         comments_age_average_df = self.comment_repository.get_comments_age_average_by_user_id()
         likes_age_average_df = self.like_repository.get_likes_age_average_by_user_id()
@@ -43,6 +48,8 @@ class Dashboard():
                       'commentsPrediction': linear_regression_comments, 'sumLikes': likes_total,
                       'sumComments': comments_total, 'visitsGrowth': visits_dict,
                       'sumVisits': visits_total, 'visitsPrediction': linear_regression_visits,
-                      'video': video_dict, 'audio': audio_dict, 'imagem': imagem_dict}
+                      'videoLikesGrowth': likes_video, 'audioLikesGrowth': likes_audio, 'picturesLikesGrowth': likes_pictures,
+                      'videoCommentsGrowth': comments_video, 'audioCommentsGrowth': comments_audio, 'picturesCommentsGrowth': comments_pictures,
+                      }
         
         return dict_merge
