@@ -184,42 +184,4 @@ def month_grow_by_type(df, type):
 
     df = df.drop('idpublicacao', 1)
     
-    return df
-
-
-def concat_video(df_like_video, df_comment_video):
-
-    df_like_video = month_grow_by_type(df_like_video, 'Video')
-    df_comment_video = month_grow_by_type(df_comment_video, 'Video')
-    
-    df = pd.concat([df_like_video, df_comment_video]).groupby(["date", "types"], as_index=False)["sum"]\
-        .sum()
-    
-    df = df.drop('types', 1)
-
     return df.to_dict('records')
-
-def concat_audio(df_like_audio, df_comment_audio):
-
-    df_like_audio = month_grow_by_type(df_like_audio, 'Audio')
-    df_comment_audio = month_grow_by_type(df_comment_audio, 'Audio')
-
-    df = pd.concat([df_like_audio, df_comment_audio]).groupby(["date", "types"], as_index=False)["sum"]\
-        .sum()
-
-    df = df.drop('types', 1)
-
-    return df.to_dict('records')
-
-def concat_imagem(df_like_imagem, df_comment_imagem):
-
-    df_like_imagem = month_grow_by_type(df_like_imagem, 'Imagem')
-    df_comment_imagem = month_grow_by_type(df_comment_imagem, 'Imagem')
-
-    df = pd.concat([df_like_imagem, df_comment_imagem]).groupby(["date", "types"], as_index=False)["sum"]\
-        .sum()
-
-    df = df.drop('types', 1)
-
-    return df.to_dict('records')
-    
