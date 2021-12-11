@@ -184,4 +184,6 @@ def month_grow_by_type(df, type):
 
     df = df.drop('idpublicacao', 1)
     
+    df = df.drop('types', 1)
+    
     return df.to_dict('records')
